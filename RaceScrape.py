@@ -15,7 +15,7 @@ class RaceScrape(object):
         self.seasons = {}
         self.header = {'User-Agent': 'Mozilla/5.0'}
 
-    def get_seasons_list(self, amount=65):
+    def get_seasons_list(self, amount=67):
         print("Getting races by season:")
         for year in range(self.startYear, self.startYear+amount):
             url = "http://www.formula1.com/content/fom-website/en/results.html/" + str(year) + \
@@ -102,4 +102,5 @@ class RaceScrape(object):
 
             self.raceDB.populate_race_info(raceName, driverID)
 
-
+    def scrape_finished(self):
+        self.raceDB.close()

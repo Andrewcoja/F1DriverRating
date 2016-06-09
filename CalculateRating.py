@@ -31,10 +31,14 @@ class CalculateRating(object):
                     latestCalculatedRace = raceID + 1
                     break
 
+            if latestRace == self.numRaces:
+                latestCalculatedRace = 1
+
         self.full_calculation_from_race_id(latestCalculatedRace)
 
     def full_calculation_from_race_id(self, race_id):
         if race_id > 1:
+            print("Doing fast calculation of early races")
             self.calculate_up_to_race_id(race_id-1)
         else:
             self.reset_driver_ratings()
@@ -150,7 +154,6 @@ class CalculateRating(object):
         self.calculate_up_to_race_id(race_id)
 
     def calculate_up_to_race_id(self, race_id):
-        print("Doing fast calculation of early races")
         self.reset_driver_ratings()
         driver_list = self.raceDB.get_all_drivers()
         for driver in driver_list:
@@ -181,3 +184,5 @@ class CalculateRating(object):
                 return id
         return 0
 
+    def calculation_finished(self):
+        self.raceDB.close()

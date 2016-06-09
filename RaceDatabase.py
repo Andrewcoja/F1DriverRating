@@ -2,7 +2,7 @@ import sqlite3
 
 
 class RaceDatabase(object):
-    def __init__(self, database='f1siteraces.db'):
+    def __init__(self, database='F1Races.db'):
         self.__database = database
         self.__connection = sqlite3.connect(self.__database)
         self.__connection
@@ -11,16 +11,10 @@ class RaceDatabase(object):
 
     def initial_setup(self):
         self.cursor.execute("DROP TABLE IF EXISTS drivers")
-        self.cursor.execute(
-            "CREATE TABLE drivers(driver_id INTEGER NOT NULL UNIQUE, first_name TEXT NOT NULL, " +
-            "last_name TEXT NOT NULL, rating INTEGER NOT NULL DEFAULT 1350, first_race INTEGER NOT NULL DEFAULT 1, " +
-            "last_race INTEGER NOT NULL DEFAULT 1 PRIMARY KEY(driver_id))")
+        self.cursor.execute("CREATE TABLE drivers(driver_id INTEGER NOT NULL UNIQUE, first_name TEXT NOT NULL, last_name TEXT NOT NULL, rating INTEGER NOT NULL DEFAULT 1350, first_race INTEGER NOT NULL DEFAULT 0, last_race INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(driver_id))")
 
         self.cursor.execute("DROP TABLE IF EXISTS races")
-        self.cursor.execute(
-            "CREATE TABLE races(race_id INTEGER NOT NULL UNIQUE, year INTEGER NOT NULL, race_num INTEGER NOT NULL, " +
-            "race_name TEXT NOT NULL, strength_of_field INTEGER, rating_available INTEGER, total_gain INTEGER, " +
-            "PRIMARY KEY(race_id))")
+        self.cursor.execute("CREATE TABLE races(race_id INTEGER NOT NULL UNIQUE, year INTEGER NOT NULL, race_num INTEGER NOT NULL, race_name TEXT NOT NULL, strength_of_field INTEGER, rating_available INTEGER, total_gain INTEGER, PRIMARY KEY(race_id))")
 
     # Drivers
     def new_driver(self, first_name, last_name):
@@ -67,10 +61,7 @@ class RaceDatabase(object):
 
         statement = "DROP TABLE IF EXISTS `%s`" % race_name
         self.cursor.execute(statement)
-        statement = "CREATE TABLE `%s`(finish_id INTEGER NOT NULL UNIQUE, name_id INTEGER NOT NULL, " + \
-                    "adjustment INTEGER, prediction INTEGER, pos_gain INTEGER, share REAL, gain INTEGER, " + \
-                    "old_rating INTEGER, new_rating INTEGER, PRIMARY KEY(finish_id), " + \
-                    "FOREIGN KEY(name_id) REFERENCES drivers(driver_id))" % race_name
+        statement = "CREATE TABLE `%s`(finish_id INTEGER NOT NULL UNIQUE, name_id INTEGER NOT NULL, adjustment INTEGER, prediction INTEGER, pos_gain INTEGER, share REAL, gain INTEGER, old_rating INTEGER, new_rating INTEGER, PRIMARY KEY(finish_id), FOREIGN KEY(name_id) REFERENCES drivers(driver_id))" % race_name
         self.cursor.execute(statement)
         self.__connection.commit()
 
@@ -88,8 +79,7 @@ class RaceDatabase(object):
         driver_info = (driver['finish_id'], driver['name_id'], driver['adjustment'], driver['prediction'],
                        driver['pos_gain'], driver['share'], driver['gain'], driver['old_rating'], driver['new_rating'],
                        driver['name_id'])
-        statement = "UPDATE `%s` SET finish_id=?, name_id=?, adjustment=?, prediction=?, pos_gain=?, share=?, " + \
-                    "gain=?, old_rating=?, new_rating=? WHERE name_id=?" % race_name
+        statement = "UPDATE `%s` SET finish_id=?, name_id=?, adjustment=?, prediction=?, pos_gain=?, share=?, gain=?, old_rating=?, new_rating=? WHERE name_id=?" % race_name
         self.cursor.execute(statement, driver_info)
         self.__connection.commit()
 
@@ -129,7 +119,10 @@ class RaceDatabase(object):
         statement = "SELECT * FROM races WHERE race_id=?"
         self.cursor.execute(statement, [race_id])
         overview = self.cursor.fetchone()
-        return dict(overview)
+        if overview is None:
+            return overview
+        else:
+            return dict(overview)
 
     def get_driver_from_race(self, race_name, driver_id):
         statement = "SELECT * FROM `%s` WHERE name_id=?" % race_name
@@ -156,8 +149,11 @@ class RaceDatabase(object):
 
     # Clean up
     def clear_races_from_year(self, clearYear):
+
         numRaces = self.number_of_races()[0]
         lastRace = self.get_overview(numRaces)
+        if lastRace is None:
+            return
         lastYear = lastRace['year']
 
         for year in range(clearYear, lastYear+1):
