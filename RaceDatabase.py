@@ -55,6 +55,11 @@ class RaceDatabase(object):
         drivers = self.cursor.fetchall()
         return drivers
 
+    def get_all_drivers_sorted_by_rating(self):
+        self.cursor.execute("SELECT * FROM drivers ORDER BY rating DESC")
+        drivers = self.cursor.fetchall()
+        return drivers
+
     # Races
     def new_race(self, season, race_num, race_name):
         self.cursor.execute("INSERT INTO races VALUES(?, ?, ?, ?, ?, ?, ?)", (None, season, race_num, race_name, 0, 0, 0))
