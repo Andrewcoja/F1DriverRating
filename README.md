@@ -1,6 +1,8 @@
 # F1DriverRating
 A rating system for F1 drivers
 
+[More info here](http://cojatronic.com/post/Ranking-All-Formula-1-Drivers)
+
 ---
 
 ## How it works
