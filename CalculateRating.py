@@ -42,7 +42,7 @@ class CalculateRating(object):
             race_name = self.raceDB.get_race_name_by_id(race)
     
             # Add in the current ratings and adjustments
-            # Each finishing postion gets an adjustment. It starts at half the total number of race entries for first
+            # Each finishing position gets an adjustment. It starts at half the total number of race entries for first
             # place and then goes down by one for each position. This insures that drivers who finish higher still get
             # points even if they finish lower than their prediction
             race_info = self.raceDB.get_race_info_by_name(race_name)

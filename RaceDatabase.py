@@ -12,11 +12,15 @@ class RaceDatabase(object):
     def initial_setup(self):
         self.cursor.execute("DROP TABLE IF EXISTS drivers")
         self.cursor.execute(
-            "CREATE TABLE drivers(driver_id INTEGER NOT NULL UNIQUE, first_name TEXT NOT NULL, last_name TEXT NOT NULL, rating INTEGER NOT NULL DEFAULT 1350, first_race INTEGER NOT NULL DEFAULT 1, last_race INTEGER NOT NULL DEFAULT 1 PRIMARY KEY(driver_id))")
+            "CREATE TABLE drivers(driver_id INTEGER NOT NULL UNIQUE, first_name TEXT NOT NULL, " +
+            "last_name TEXT NOT NULL, rating INTEGER NOT NULL DEFAULT 1350, first_race INTEGER NOT NULL DEFAULT 1, " +
+            "last_race INTEGER NOT NULL DEFAULT 1 PRIMARY KEY(driver_id))")
 
         self.cursor.execute("DROP TABLE IF EXISTS races")
         self.cursor.execute(
-            "CREATE TABLE races(race_id INTEGER NOT NULL UNIQUE, year INTEGER NOT NULL, race_num INTEGER NOT NULL, race_name TEXT NOT NULL, strength_of_field INTEGER, rating_available INTEGER, total_gain INTEGER, PRIMARY KEY(race_id))")
+            "CREATE TABLE races(race_id INTEGER NOT NULL UNIQUE, year INTEGER NOT NULL, race_num INTEGER NOT NULL, " +
+            "race_name TEXT NOT NULL, strength_of_field INTEGER, rating_available INTEGER, total_gain INTEGER, " +
+            "PRIMARY KEY(race_id))")
 
     # Drivers
     def new_driver(self, first_name, last_name):
@@ -63,7 +67,10 @@ class RaceDatabase(object):
 
         statement = "DROP TABLE IF EXISTS `%s`" % race_name
         self.cursor.execute(statement)
-        statement = "CREATE TABLE `%s`(finish_id INTEGER NOT NULL UNIQUE, name_id INTEGER NOT NULL, adjustment INTEGER, prediction INTEGER, pos_gain INTEGER, share REAL, gain INTEGER, old_rating INTEGER, new_rating INTEGER, PRIMARY KEY(finish_id), FOREIGN KEY(name_id) REFERENCES drivers(driver_id))" % race_name
+        statement = "CREATE TABLE `%s`(finish_id INTEGER NOT NULL UNIQUE, name_id INTEGER NOT NULL, " + \
+                    "adjustment INTEGER, prediction INTEGER, pos_gain INTEGER, share REAL, gain INTEGER, " + \
+                    "old_rating INTEGER, new_rating INTEGER, PRIMARY KEY(finish_id), " + \
+                    "FOREIGN KEY(name_id) REFERENCES drivers(driver_id))" % race_name
         self.cursor.execute(statement)
         self.__connection.commit()
 
@@ -78,8 +85,11 @@ class RaceDatabase(object):
         self.__connection.commit()
 
     def update_driver_in_race(self, driver, race_name):
-        driver_info = (driver['finish_id'], driver['name_id'], driver['adjustment'], driver['prediction'], driver['pos_gain'], driver['share'], driver['gain'], driver['old_rating'], driver['new_rating'], driver['name_id'])
-        statement = "UPDATE `%s` SET finish_id=?, name_id=?, adjustment=?, prediction=?, pos_gain=?, share=?, gain=?, old_rating=?, new_rating=? WHERE name_id=?" % race_name
+        driver_info = (driver['finish_id'], driver['name_id'], driver['adjustment'], driver['prediction'],
+                       driver['pos_gain'], driver['share'], driver['gain'], driver['old_rating'], driver['new_rating'],
+                       driver['name_id'])
+        statement = "UPDATE `%s` SET finish_id=?, name_id=?, adjustment=?, prediction=?, pos_gain=?, share=?, " + \
+                    "gain=?, old_rating=?, new_rating=? WHERE name_id=?" % race_name
         self.cursor.execute(statement, driver_info)
         self.__connection.commit()
 

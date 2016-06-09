@@ -18,7 +18,8 @@ class RaceScrape(object):
     def get_seasons_list(self, amount=65):
         print("Getting races by season:")
         for year in range(self.startYear, self.startYear+amount):
-            url = "http://www.formula1.com/content/fom-website/en/results.html/" + str(year) + "/races/94/great-britain/race-result.html"
+            url = "http://www.formula1.com/content/fom-website/en/results.html/" + str(year) + \
+                  "/races/94/great-britain/race-result.html"
             req = Request(url, headers=self.header)
             page = urlopen(req)
             soup = BeautifulSoup(page, "html.parser")
@@ -51,7 +52,8 @@ class RaceScrape(object):
 
     def __populate_race(self, year, race, race_num):
         # Grab the page for this race
-        url = "http://www.formula1.com/content/fom-website/en/results.html/" + str(year) + "/races/" + race + "/race-result.html"
+        url = "http://www.formula1.com/content/fom-website/en/results.html/" + str(year) + "/races/" + race + \
+              "/race-result.html"
         req = Request(url, headers=self.header)
         page = urlopen(req)
         soup = BeautifulSoup(page, "html.parser")
